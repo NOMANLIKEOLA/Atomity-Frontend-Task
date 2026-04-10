@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { Department } from "@/data/departments";
 import { formatMoney, formatPercentCompact } from "@/lib/format";
 
@@ -9,20 +10,29 @@ type BarChartProps = {
   onDepartmentSelect: (departmentId: string) => void;
 };
 
-function percentOf(value: number, maxValue: number) {
-  if (maxValue <= 0) {
-    return 0;
-  }
-
-  return Math.max((value / maxValue) * 100, value > 0 ? 5 : 0);
+function percentOf(value: number, maxValue: number): number {
+  if (maxValue <= 0) return 0;
+  return Math.max((value / maxValue) * 100, value > 0 ? 4 : 0);
 }
 
-export function BarChart({
-  departments,
-  mode,
-  onDepartmentSelect
-}: BarChartProps) {
-  const budgetMax = Math.max(...departments.map((department) => department.budget), 1);
+export function BarChart({ departments, mode, onDepartmentSelect }: BarChartProps) {
+  const [mounted, setMounted] = useState(false);
+
+  // On first paint bars are at 0%, then rAF triggers the CSS transition to real height
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  // Collapse → re-expand when mode switches so bars re-animate
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(false);
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, [mode]);
+
+  const budgetMax = Math.max(...departments.map((d) => d.budget), 1);
   const returnMax = 25;
 
   return (
@@ -37,7 +47,9 @@ export function BarChart({
                 className="chartGroupBars"
                 data-mode={mode}
                 style={{
-                  gridTemplateColumns: singleMode ? "1fr" : "repeat(2, minmax(0, 1fr))"
+                  gridTemplateColumns: singleMode
+                    ? "1fr"
+                    : "repeat(2, minmax(0, 1fr))",
                 }}
               >
                 {mode === "budget" ? (
@@ -46,15 +58,20 @@ export function BarChart({
                       type="button"
                       className="chartBarSlot"
                       onClick={() => onDepartmentSelect(department.id)}
-                      aria-label={`${department.name} budget bar`}
+                      aria-label={`${department.name} — budget ${formatMoney(department.budget)}`}
                     >
-                      <div className="chartValue">{formatMoney(department.budget)}</div>
+                      <div className="chartValue">
+                        {formatMoney(department.budget)}
+                      </div>
                       <div className="chartBarFrame">
                         <div
                           className="chartBar"
                           style={{
-                            blockSize: `${percentOf(department.budget, budgetMax)}%`,
-                            background: `var(${department.accentVar})`
+                            blockSize: mounted
+                              ? `${percentOf(department.budget, budgetMax)}%`
+                              : "0%",
+                            background: `var(${department.accentVar})`,
+                            opacity: 0.45,
                           }}
                         />
                       </div>
@@ -65,16 +82,20 @@ export function BarChart({
                       type="button"
                       className="chartBarSlot"
                       onClick={() => onDepartmentSelect(department.id)}
-                      aria-label={`${department.name} spent bar`}
+                      aria-label={`${department.name} — spent ${formatMoney(department.spent)}`}
                     >
-                      <div className="chartValue">{formatMoney(department.spent)}</div>
+                      <div className="chartValue">
+                        {formatMoney(department.spent)}
+                      </div>
                       <div className="chartBarFrame">
                         <div
                           className="chartBar"
                           style={{
-                            blockSize: `${percentOf(department.spent, budgetMax)}%`,
-                            background:
-                              "color-mix(in srgb, var(--department-accent, var(--color-accent-primary)) 82%, var(--color-text-primary))"
+                            blockSize: mounted
+                              ? `${percentOf(department.spent, budgetMax)}%`
+                              : "0%",
+                            background: `var(${department.accentVar})`,
+                            opacity: 0.85,
                           }}
                         />
                       </div>
@@ -86,7 +107,7 @@ export function BarChart({
                     type="button"
                     className="chartBarSlot"
                     onClick={() => onDepartmentSelect(department.id)}
-                    aria-label={`${department.name} net return bar`}
+                    aria-label={`${department.name} — net return ${formatPercentCompact(department.netReturn)}`}
                   >
                     <div className="chartValue">
                       {formatPercentCompact(department.netReturn)}
@@ -95,8 +116,10 @@ export function BarChart({
                       <div
                         className="chartBar"
                         style={{
-                          blockSize: `${percentOf(department.netReturn, returnMax)}%`,
-                          background: `var(${department.accentVar})`
+                          blockSize: mounted
+                            ? `${percentOf(department.netReturn, returnMax)}%`
+                            : "0%",
+                          background: `var(${department.accentVar})`,
                         }}
                       />
                     </div>
@@ -108,10 +131,9 @@ export function BarChart({
               <button
                 type="button"
                 className="chartGroupLabel"
-                style={{
-                  color: `var(${department.accentVar})`
-                }}
+                style={{ color: `var(${department.accentVar})` }}
                 onClick={() => onDepartmentSelect(department.id)}
+                aria-label={`View ${department.name} detail`}
               >
                 {department.shortLabel}
               </button>
