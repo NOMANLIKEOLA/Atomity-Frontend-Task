@@ -35,11 +35,11 @@ npm run dev
 
 ## Architecture Decisions
 
-- **No UI libraries** — every component built from scratch
-- **Design tokens** — all hex values live exclusively in globals.css as CSS custom properties; components never reference raw hex
-- **Caching** — TanStack Query with 5-minute stale time; zero redundant requests on revisit
-- **Animations** — scroll-triggered via useInView, reduced-motion respected throughout
-- **Modern CSS** — clamp(), color-mix(), CSS nesting, container queries, logical properties, :has()
+No UI libraries — every component built from scratch
+Design tokens — all hex values live exclusively in globals.css as CSS custom properties; components never reference raw hex
+Caching — TanStack Query with 5-minute stale time; zero redundant requests on revisit
+Animations — scroll-triggered via useInView, reduced-motion respected throughout
+Modern CSS — clamp(), color-mix(), CSS nesting, container queries, logical properties, :has()
 
 ---
 
