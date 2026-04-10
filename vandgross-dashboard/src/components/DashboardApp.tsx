@@ -126,7 +126,7 @@ export default function DashboardApp() {
                   Budget Control <br />
                   Dashboard
                 </h1>
-                <div className="heroSub">VANDGROSS CONSTRUCTION CO. — FY BUDGET TRACKER</div>
+                <div className="heroSub">VANDGROSS CONSTRUCTION CO. — BUDGET TRACKER</div>
               </div>
 
               <MetricStrip
