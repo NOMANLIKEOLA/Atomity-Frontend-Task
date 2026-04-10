@@ -1,6 +1,6 @@
 # VandGross Construction Co. - Budget Control Dashboard
 
-Basically, my takeaway on the first feature from the video that was i am to build a feature that keeps track of spending within a team, to avoid waste of funds and also inputs expenditures automatically. So i created a mock company, VandGross Construction Co., then firstly, i needed data so i went and gave mock allocated budgets for four departments(project management, engineering, procurement & health and safety), i gave the amount of $10k, $50k, $200k and $5k respectively, then i requested a research for how the allocated budgets would most likely be spent in a construction company and i got results. I used and refined the results for my data in which was inputed to this project.
+Basically, my takeaway on the first feature from the video was that i am to build a feature that keeps track of spending within a team, to avoid waste of funds and also inputs expenditures automatically. So i created a mock company, VandGross Construction Co., but firstly, i needed data so i went and gave mock allocated budgets for four departments(project management, engineering, procurement & health and safety), i gave the amount of $10k, $50k, $200k and $5k respectively, then i requested a research for how the allocated budgets would most likely be spent in a construction company and i got results. I used and refined the results for my data in which was inputed to this project.
 
 Live Demo → https://vandgross-dashboard.vercel.app/ 
 
